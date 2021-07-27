@@ -15,7 +15,7 @@
     const distance = 1400;
     const Graph = ForceGraph3D()
       (document.getElementById('3d-graph'))
-        .jsonUrl('../datasets/movements.json')
+        .jsonUrl('../datasets/mixture1.json')
         .nodeAutoColorBy('group')
         .cameraPosition({ z: distance })
         .nodeThreeObject(node => {

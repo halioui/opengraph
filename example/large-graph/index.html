@@ -26,25 +26,44 @@
 
   <script>
     const elem = document.getElementById('3d-graph');
+    
+
     let curDataSetIdx,
       numDim = 3;
     let highlightNodes = [];
     let highlightLink = null;
     const distance = 1400;
 
-    const Graph = ForceGraph3D()(elem)
-      .jsonUrl('../datasets/movements.json')
+    const Graph = ForceGraph3D({
+      rendererConfig: {
+        antialias: true
+      }})(elem)
+      .jsonUrl('../datasets/mixture.json')
+      .backgroundColor('#FFFFFF')
+      // .width(window.innerWidth)
+      // .height(window.innerHeight)
       // .jsonUrl('../datasets/movements_date.json')
       // .jsonUrl('../datasets/movements_humidity.json')
       // .jsonUrl('../datasets/movements_index.json')
-      // .jsonUrl('../datasets/movements_temperature.json')
-      .nodeAutoColorBy('group')
-      .linkAutoColorBy('type')
+      // .jsonUrl('../datasets/movements_temperat<ure.json')
+      // .nodeAutoColorBy('group')
+      // .linkAutoColorBy('source')
+      // .nodeColor('#000000')
+      .nodeColor(d => d.type=="OK" ? '#0E1111' : '#0E1111')
+      .nodeOpacity(1)
+      // .nodeLabel(node => `${node.class}: ${node.description}`)
+      .nodeLabel(node => `${node.description}`)
+      .nodeVal('description')
+      .linkColor('#0E1111')
+      .linkWidth(4)
+      .linkOpacity(1)
+      .linkWidth(link => link === highlightLink ? 4 : 1)
+      .linkDirectionalParticles(link => link === highlightLink ? 4 : 0)
+      // .linkDirectionalParticleWidth(4)
       // .nodeColor(node => highlightNodes.indexOf(node) === -1 ? 'rgba(0,255,255,0.6)' : 'rgb(255,0,0,1)')
       // .linkWidth(link => link === highlightLink ? 4 : 1)
       // .linkDirectionalParticles(link => link === highlightLink ? 4 : 0)
       // .linkDirectionalParticleWidth(4)
-      .nodeLabel(node => `${node.class}: ${node.description}`)
       .numDimensions(numDim)
       // .onNodeHover(node => elem.style.cursor = node ? 'pointer' : null)
       // .onNodeClick(node => window.open(`https://bl.ocks.org/${node.user}/${node.id}`, '_blank'));
@@ -93,10 +112,7 @@
         // .numDimensions(3)
         //.enableNavigationControls(false)
         .enableNodeDrag(false)
-        .nodeColor(node => highlightNodes.indexOf(node) === -1 ? 'rgba(0,255,255,0.6)' : 'rgb(255,0,0,1)')
-        .linkWidth(link => link === highlightLink ? 4 : 1)
-        .linkDirectionalParticles(link => link === highlightLink ? 4 : 0)
-        .linkDirectionalParticleWidth(4)
+        // .nodeColor(node => highlightNodes.indexOf(node) === -1 ? 'rgba(0,255,255,0.6)' : 'rgb(255,0,0,1)')
         .cameraPosition({ z: distance })
         /*
         .nodeThreeObject(
@@ -111,6 +127,7 @@
         )
         */
         ;
+
 
     const toggleDimensions = function(numDimensions) {
       numDim = numDimensions;
@@ -132,6 +149,14 @@
     //   });
     //   angle += Math.PI / 300;
     // }, 40);
+
+    // fit to canvas when engine stops
+    // Graph.onEngineStop(() => Graph.zoomToFit(400));
+
+    elementResizeDetectorMaker().listenTo(
+      document.getElementById('3d-graph'),
+      el => Graph.width(el.offsetWidth)
+    );
     
   </script>
   <!-- <script src="../../src/index.js"></script> -->
